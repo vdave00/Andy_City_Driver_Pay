@@ -1,0 +1,151 @@
+﻿@* <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("FleetFilter").addEventListener("change", function () {
+            const filterValue = this.value.toLowerCase();
+            const table = document.getElementById("DriverTable");
+            const rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) {
+                const fleetCell = rows[i].getElementsByTagName("td")[3]; // Fleet column index
+                if (fleetCell) {
+                    const fleetText = fleetCell.textContent || fleetCell.innerText;
+                    console.log(`Row ${i}: Fleet - ${fleetText}, Filter - ${filterValue}`);
+                    rows[i].style.display = fleetText.trim().toLowerCase() === filterValue || filterValue === "" ? "" : "none";
+                    // rows[i].style.display = fleetText.toLowerCase().includes(filterValue) || filterValue === "" ? "" : "none";
+                }
+            }
+        });
+    });
+
+</script> *@
+
+@* <script>
+    This Script for Filter ... working code .. 
+    document.addEventListener("DOMContentLoaded", function () {
+        const fleetFilter = document.getElementById("FleetFilter");
+        const table = document.getElementById("DriverTable");
+
+        function filterTable() {
+            const filterValue = fleetFilter.value.toLowerCase();
+            const rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) { // Skip the header row
+                const fleetCell = rows[i].getElementsByTagName("td")[3]; // Fleet column index
+                if (fleetCell) {
+                    const fleetText = fleetCell.textContent || fleetCell.innerText;
+                    rows[i].style.display =
+                        fleetText.trim().toLowerCase() === filterValue || filterValue === "" ? "" : "none";
+                }
+            }
+        }
+
+        // Filter the table on dropdown change
+        fleetFilter.addEventListener("change", function () {
+            filterTable();
+        });
+
+        // Filter the table on page load if a fleet is pre-selected
+        if (fleetFilter.value) {
+            filterTable();
+        }
+    });
+</script> *@
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fleetFilter = document.getElementById("FleetFilter");
+        const table = document.getElementById("DriverTable");
+
+        // Load the saved filter value from sessionStorage
+        const savedFleet = sessionStorage.getItem("selectedFleet");
+        if (savedFleet) {
+            fleetFilter.value = savedFleet;
+            filterTable();
+        }
+
+        // Function to filter the table
+        function filterTable() {
+            const filterValue = fleetFilter.value.toLowerCase();
+            const rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) { // Skip the header row
+                const fleetCell = rows[i].getElementsByTagName("td")[3]; // Fleet column index
+                if (fleetCell) {
+                    const fleetText = fleetCell.textContent || fleetCell.innerText;
+                    rows[i].style.display =
+                        fleetText.trim().toLowerCase() === filterValue || filterValue === "" ? "" : "none";
+                }
+            }
+        }
+
+        // Save the selected filter value in sessionStorage and filter the table
+        fleetFilter.addEventListener("change", function () {
+            sessionStorage.setItem("selectedFleet", fleetFilter.value);
+            filterTable();
+        });
+    });
+</script>
+
+
+
+<div class="row mb-3">
+    <div class="col-md-4">
+        <label for="FleetFilter" class="form-label">Filter by Fleet</label>
+        <select id="FleetFilter" class="form-select">
+            <option value="">-- Select Fleet --</option>
+            @foreach (var fleet in ViewBag.Fleets)
+            {
+                if (fleet == (ViewBag.SelectedFleet ?? "").ToString())
+                {
+                    <option value="@fleet" selected>@fleet</option>
+                }
+                else
+                {
+                    <option value="@fleet">@fleet</option>
+                }
+            }
+        </select>
+    </div>
+<div class="mb-3">
+
+        <table class="table table-striped" id="DriverTable">
+                <thead>
+                    <tr>
+                        <th>Driver ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Fleet</th>
+                        @* <th>Total Hours</th> *@
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Driverid</td>
+                                <td>@item.DriverFname</td>
+                                <td>@item.DriverLname</td>
+                                <td>@item.DriverFleet</td>
+                               
+                                <td>
+                                <a class="btn btn-danger" asp-route-DriverID="@item.Driverid" asp-route-sdate="@ViewBag.startDate" asp-route-edate="@ViewBag.endDate" asp-route-pdate="@ViewBag.payPeriod" asp-action="DriverView">
+                                        <i class="bi bi-file-earmark-fill"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                       
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center">No drivers found for the selected type.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+</div>
+

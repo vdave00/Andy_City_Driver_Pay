@@ -1,0 +1,516 @@
+﻿ @model IEnumerable<AndyDriverPayRateDTO>
+<script>
+
+    if (!form.checkValidity()) {
+        form.reportValidity(); // Show browser validation messages
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Add Bootstrap's validation classes
+        form.classList.add('was-validated');
+    } else {
+        //form.submit(); // Submit the form
+
+        $(document).on("click", "#submitPayRateButton", function (e) {
+            e.preventDefault();
+
+            let form = $(this);
+            let url = form.attr("action");
+            let formData = form.serialize();
+
+            $.post(url, formData)
+                .done(function (response) {
+                    if (response.success) {
+                        // Close the modal and redirect to the updated list
+                        $("#createPayRateModal").modal("hide");
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        // Replace the modal body with the returned partial view
+                        $("#createPayRateModalBody").html(response);
+                    }
+                })
+                .fail(function () {
+                    alert("An error occurred. Please try again.");
+                });
+        });
+    }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButtons = document.querySelectorAll(".edit-btn");
+
+        editButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                // Populate modal fields
+                const modal = document.querySelector("#EditPayRateModal");
+                modal.querySelector("#DriverName").value = `${this.getAttribute("data-driverfname")}${this.getAttribute("data-driverlname")}`;
+                modal.querySelector("#DivisionName").value = this.getAttribute("data-divisionname");
+                modal.querySelector("#RegularPayRate").value = this.getAttribute("data-regularratedayshift");
+                modal.querySelector("#OverTimePayRateDay").value = this.getAttribute("data-overtimeratedayshift");
+                modal.querySelector("#RatePerMile").value = this.getAttribute("data-ratepermile");
+                modal.querySelector("#WeekendPayRate").value = this.getAttribute("data-weekendpayrate");
+                modal.querySelector("#WeekendRateOT").value = this.getAttribute("data-weekendrateot");
+                modal.querySelector("#EffectiveDateFrom").value = this.getAttribute("data-effectivefrom");
+                modal.querySelector("#EffectiveDateTo").value = this.getAttribute("data-effectiveto");
+                modal.querySelector("#RegPayRateEvening").value = this.getAttribute("data-regulareveshiftRate");
+                modal.querySelector("#OverTimePayRateEvening").value = this.getAttribute("data-OTrateforeveshift");
+                modal.querySelector("#RegularPayRateNight").value = this.getAttribute("data-regularnightshiftRate");
+                modal.querySelector("#OverTimePayRateNight").value = this.getAttribute("data-OTnightshiftRate");
+
+                // Set the form action dynamically
+                const form = document.querySelector("#editPayRateForm");
+                const id = this.getAttribute("data-payid");
+                form.setAttribute("action", `/Division/GetOneRule/${id}`);
+            });
+        });
+
+        // Handle form submission
+        $("#editPayRateForm").submit(function (e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const url = form.attr("action");
+            const formData = form.serialize();
+
+            $.ajax({
+                url: url,
+                type: "PUT",
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        // Close modal and refresh page or redirect
+                        $("#EditPayRateModal").modal("hide");
+                        window.location.href = response.redirectUrl || "/Division/Index";
+                    } else {
+                        alert("Failed to update Pay Rate Rule.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while updating the Pay Rate Rule.");
+                }
+            });
+        });
+    });
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the DriverName input and datalist
+        const driverNameInput = document.getElementById('DriverName');
+        var datalist = document.getElementById('driverList');
+
+        // Listen for input events on DriverName
+        driverNameInput.addEventListener('input', function () {
+            const input = this.value;
+
+            // Trigger API call if input is 3 or more characters
+            if (input.length >= 3) {
+                fetch(`https://localhost:7108/api/DriverPayDetail/${input}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch driver data');
+                        }
+                        else {
+                            return response.json();
+                            console.log(data);
+                        }
+                    })
+                    .then(data => {
+                        // Clear the previous options
+                        datalist.innerHTML = '';
+
+                        // Populate the datalist with results
+                        data.forEach(name => {
+                            const option = document.createElement('option');
+                            option.value = name; // Directly use the name from the list
+                            datalist.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching driver names:', error));
+            }
+        });
+    });
+</script>
+
+
+
+<!--JavaScript For Populate Edit Modal-->
+@* <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-btn');
+
+        editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Get data from button attributes
+                const andyPayRateid = this.getAttribute('data-payid');
+                console.log(andyPayRateid);
+                const driverId = this.getAttribute('data-driverid');
+                const driverFname = this.getAttribute('data-driverfname');
+                const driverLname = this.getAttribute('data-driverlname');
+                const divisionName = this.getAttribute('data-divisionname');
+                const regularRateDayShift = this.getAttribute('data-regularratedayshift');
+                const overTimeRateDayShift = this.getAttribute('data-overtimeratedayshift');
+                const weekendRateDayShift = this.getAttribute('data-WeekendPayRate');
+                const WeekendRateOT = this.getAttribute('data-WeekendRateOT');
+                const ratePerMile = this.getAttribute('data-ratepermile');
+                const effectiveFrom = this.getAttribute('data-effectivefrom');
+                const effectiveTo = this.getAttribute('data-effectiveto');
+
+                // Populate modal fields
+                const modal = document.querySelector('#EditPayRateModal');
+                modal.querySelector('#DriverName').value = `${driverFname} ${driverLname}`;
+                modal.querySelector('#DivisionName').value = divisionName;
+                modal.querySelector('#RegularPayRate').value = regularRateDayShift;
+                modal.querySelector('#OverTimePayRateDay').value = overTimeRateDayShift
+                modal.querySelector('#RatePerMile').value = ratePerMile;
+                modal.querySelector('#WeekendPayRate').value = weekendRateDayShift;
+                modal.querySelector('#WeekendRateOT').value = WeekendRateOT;
+                modal.querySelector('#EffectiveDateFrom').value = effectiveFrom;
+                modal.querySelector('#EffectiveDateTo').value = effectiveTo;
+            });
+        });
+    });
+</script> *@
+
+<!--End of Script-->
+<style>
+/*     th {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        white-space: nowrap;
+        font-size: 12px;
+        transform: rotate(180deg);
+        vertical-align: middle;
+    } */
+    th {
+        white-space: normal;
+        word-wrap: break-word;
+        font-size: 12px;
+    }
+</style>
+
+<div class="Custom-Card">
+    <div class="card shadow border-0  w-100" style="max-width: 100%; margin: 0 auto;">
+        <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="text-white">Driver Pay Rates</h1>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="padding:5px; margin:5px;">
+            <div class="row pb-3">
+                <!-- Left Section: Driver Name Input -->
+                <div class="col-9">
+                    <form asp-action="DriverList" method="get" class="d-flex align-items-center">
+                        <label for="driverIdInput" class="form-label me-2 mb-0">Driver ID</label>
+                        <input type="text" id="driverIdInput" name="driverid" placeholder="Enter Driver ID" class="form-control-sm me-2" />
+                        <button type="submit" class="btn btn-primary btn-sm">Fetch Updated Data</button>
+                    </form>
+                </div>
+
+                <!-- Right Section: Create PayRate Rule Button -->
+                <div class="col-3 text-end">
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createPayRateModal">
+                        <i class="bi bi-plus-square"></i> Create New PayRate Rule
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!--Form to Display serched Driver  -->
+        <form id="driverPayRatesForm">
+            <div  class=" table-responsive" style="max-height: 400px; overflow-y: auto; overflow-x: auto;">
+                <table class="table table-bordered">
+                    <thead style="position: sticky; top: 0; background: #f8f9fa; z-index: 2;">
+                    <tr>
+                        <th>Driver Type</th>
+                        <th>Driver ID</th>
+                        <th>Driver First Name</th>
+                        <th>Driver Last Name</th>
+                        <th>Division Name</th>
+                        <th>Effective From</th>
+                        <th>Effective To</th>
+                    @*     <th>Is Active</th> *@
+                        <th title ="Regular Pay Rate for Day Shift">Reg. Pay [Day]</th>
+                        <th>OT. Pay Rate [Day]</th>
+                        <th>Pay Rate[Wknd]</th>
+                        <th>OT Pay[Wknd]</th>
+                        <th>Reg.Pay Rate [Eve.]</th>
+                        <th>OT Pay Rate [Eve. ]</th>
+                        <th>Reg. Pay Rate [Night]</th>
+                        <th>OT Pay Rate [Night]</th>
+                        <th>Per Mileage Rate</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@item.DriverId</td>
+                                <td>@item.DriverFname</td>
+                                <td>@item.DriverLName</td>
+                                <td>@item.FleetCompanyId</td>
+                                <td>@item.EffectiveDateFrom  </td>
+                                <td>@item.EffectiveDateTo </td>
+                                <!-- Regular Pay Rate Day Shift -->
+                                <td>@item.RegularRateDayShift </td>
+                                <!-- Over-Time Pay Rate Day Shift -->
+                                <td>@item.OverTimeRateDayShift </td>
+                                <!--Weekend Pay Rate -->
+                                <td>@item.WeekendRate</td>
+                                <!--Weekend Pay Rate -->
+                                <td>@item.OverTimeRateWeekendShift </td>
+                                <!-- Regular Pay Rate Evening Shift -->
+                                <td>@item.RegularRateEveShift </td>
+                                <!-- Over-Time Rate Evening Shift -->
+                                <td>@item.OverTimeRateEveShift    </td>
+                                <!-- Regular Pay Rate Night Shift -->
+                                <td>  @item.RegularRateNightShift </td>
+                                <!-- Over-Time Rate Night Shift -->
+                                <td> @item.OverTimeRateNightShift </td>
+                                <!-- Rate Per Mileage -->
+                                <td> @item.RatePerMileage </td>
+                                <td>
+                                  @*   <!-- Save Changes Button -->
+                                    <button type="button" class="btn btn-success save-btn" data-id="@item.AndyDriverPayRateId">
+                                        <i class="bi bi-save"></i> Save Changes
+                                    </button> *@
+                                        <button type="button"
+                                                class="btn btn-outline-primary edit-btn"
+                                                data-payid="@item.AndyDriverPayRateId"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#EditPayRateModal"
+                                                data-driverid="@item.DriverId"
+                                                data-driverfname="@item.DriverFname"
+                                                data-driverlname="@item.DriverLName"
+                                                data-divisionname="@item.FleetCompanyId"
+                                                 data-regulareveshiftRate="@item.RegularRateEveShift"
+                                                data-OTrateforeveshift ="@item.OverTimeRateEveShift"
+                                                data-regularnightshiftRate="@item.RegularRateNightShift"
+                                                data-OTnightshiftRate="@item.OverTimeRateNightShift" 
+                                                data-regularratedayshift="@item.RegularRateDayShift"
+                                                data-overtimeratedayshift="@item.OverTimeRateDayShift" 
+                                                data-WeekendPayRate="@item.WeekendRate"
+                                                data-WeekendRateOT="@item.WeekendRate"
+                                                data-ratepermile="@item.RatePerMileage"
+                                                data-effectivefrom="@item.EffectiveDateFrom?.ToString("yyyy-MM-dd")"
+                                                data-effectiveto="@item.EffectiveDateTo?.ToString("yyyy-MM-dd")">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            </div>
+        </form>
+        <!--Form End ..-->
+    </div>
+    <!--Model for Creating a PayRate for Driver-->
+    <div class="modal fade" id="createPayRateModal" tabindex="-1" aria-labelledby="createPayRateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createPayRateModalLabel ">Create New PayRate Rule</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form Inside Modal -->
+                    <form method="post" id="createPayRateForm" action="@Url.Action("DriverPayRateCreate")">
+                        <div class="row">
+                            <!-- Division Name -->
+                            <div class="col-md-3 mb-3">
+                                <label for="DivisionName" class="form-label">Division Name</label>
+                                <select class="form-select" id="DivisionName" name="DivisionName">
+                                    <option value="">Select Division</option>
+                                    <option value="DUMP">DUMP</option>
+                                    <option value="DRY">DRY</option>
+                                    <option value="CART">CART</option>
+                                    <option value="D4AX">D4AX</option>
+                                    <option value="FLAT">FLAT</option>
+                                    <option value="INTER">INTER</option>
+                                    <option value="REEF">REEF</option>
+                                </select>
+                            </div>
+
+                            <!-- Driver Name -->
+                            <div class="col-md-3 mb-3">
+                                <label for="DriverName" class="form-label">Driver ID</label>
+                                <input type="text" class="form-control" id="DriverName" name="DriverName" list="driverList" placeholder="Enter driver name...">
+                                <datalist id="driverList"></datalist>
+                            </div>
+
+                            <!-- Regular Pay Rate -->
+                            <div class="col-md-3 mb-3">
+                                <label for="RegularPayRate" class="form-label">Reg. Pay Rate</label>
+                                <input type="text" class="form-control" id="RegularPayRate" name="RegularPayRate" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="RatePerMile" class="form-label">Rate Per Mile</label>
+                                <input type="text" class="form-control" id="RatePerMile" name="RatePerMile" />
+                            </div>
+                            <!-- Overtime Pay Rate -->
+                            <!--Adding OT Rate with the formulas so no need Extra Space for it ...-->
+                      @*         <div class="col-md-3 mb-3">
+                            <label for="OvertimePayRate" class="form-label">Overtime Pay Rate</label>
+                            <input type="text" class="form-control" id="OvertimePayRate" name="OvertimePayRate" />
+                            </div> *@
+                        </div>
+                     @*    <div class="row">
+                            <!-- Rate Per Mile -->
+                          
+                            <div class="col-md-3 mb-3">
+                                <label for="RegularPayRateEveningShift" class="form-label">Reg. Pay Rate [Eve Shift]</label>
+                                <input type="text" class="form-control" id="RegularPayRateEveningShift" name="RegularPayRateEveningShift" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="RegularPayRateEveningShift" class="form-label">OT. Pay Rate [Eve Shift]</label>
+                                <input type="text" class="form-control" id="RegularPayRateEveningShift" name="RegularPayRateEveningShift" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="RegularPayRateNightShift" class="form-label">Reg. Pay Rate [weekend]</label>
+                                <input type="text" class="form-control" id="WeekenPayRate" name="RegularPayRateNightShift" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Regular Pay Rate [Evening Shift] -->
+                            <div class="col-md-3 mb-3">
+                                <label for="RegularPayRateNightShift" class="form-label">OT. Pay Rate [weekend]</label>
+                                <input type="text" class="form-control" id="WeekenPayRate" name="RegularPayRateNightShift" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="RegularPayRateNightShift" class="form-label">Reg.Pay Rate[Night]</label>
+                                <input type="text" class="form-control" id="RegularPayRateNightShift" name="RegularPayRateNightShift" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="RegularPayRateNightShift" class="form-label">OT.Pay Rate[Night]</label>
+                                <input type="text" class="form-control" id="RegularPayRateNightShift" name="RegularPayRateNightShift" />
+                            </div>
+                           
+                        </div> *@
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="fromDate" class="form-label">Effective Date From:</label>
+                                <input type="date" id="EffectiveDateFrom" name="EffectiveDateFrom" class="form-control" required>
+                            </div><div class="col-md-3 mb-3">
+                                <label for="toDate" class="form-label">Effective Till:</label>
+                                <input type="date" id="EffectiveDateTo" name="EffectiveDateTo" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" asp-action="aDivisionCreate1">Close</button>
+                    @*  <button type="submit" class="btn btn-success">Save Changes</button> *@
+                 @*    data-bs-toggle="modal" data-bs-target="#createPayRateModal" *@
+                    <button class="btn btn-outline-primary" form="createPayRateForm"  type="submit">
+                        <i class="bi bi-plus-square"></i> Create New PayRate Rule
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Model End ..-->
+
+    <!--Model for updating a PayRate for Driver-->
+    <div>
+        <div id="EditPayRateModal" class="modal fade" tabindex="-1" aria-labelledby="Edit" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createPayRateModalLabel ">Save</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      @*   <form method="post" id="editPayRateForm" action="@Url.Action("GetOneRule")"> *@
+                        <form id="editPayRateForm" method="POST"> 
+                          @*   <input type="hidden" class="form-control" id="DriverName" name="DriverFname" /> *@
+                            <input type="hidden" id="AndyDriverPayRateId" class="form-control" name="AndyDriverPayRateId" />
+                            
+                            <div class="row">
+                                <input type="hidden" class="form-control" id="andyPayRateid" name="AndyDriverPayRateId" />
+                                <div class="col-md-3 mb-3">
+                                    <label for="DriverName" class="form-label">Driver Name</label>
+                                    <input type="text" class="form-control" id="DriverName" name="DriverFname" readonly />
+                                
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="DivisionName" class="form-label">Division Name</label>
+                                   @*  <select class="form-select" id="DivisionName" name="DivisionName"> *@
+                                    <input type="text" class="form-control" id="DivisionName" name="FleetCompanyId"  readonly/>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="RegularPayRate" class="form-label">Reg. Pay Rate</label>
+                                    <input type="text" class="form-control" id="RegularPayRate" name="RegularRateDayShift" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="RatePerMile" class="form-label">Rate Per Mile</label>
+                                    <input type="text" class="form-control" id="RatePerMile" name="RatePerMileage" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="OverTime" class="form-label">OT. Pay Rate[Day] </label>
+                                    <input type="text" class="form-control" id="OverTimePayRateDay" name="OverTimeRateDayShift" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="RegularRateEvening" class="form-label">Reg. Pay Rate [Evening]</label>
+                                    <input type="text" class="form-control" id="RegPayRateEvening" name="RegularRateEveShift" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="OverTimeRateEvening" class="form-label">OT. Pay Rate [Evening]</label>
+                                    <input type="text" class="form-control" id="OverTimePayRateEvening" name="OverTimeRateEveShift" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="RegularPayRateNight" class="form-label">Reg. Pay Rate  [Night_]</label>
+                                    <input type="text" class="form-control" id="RegularPayRateNight" name="RegularRateNightShift" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="OverTimePayRate" class="form-label">OT. Pay Rate  [Night_]</label>
+                                    <input type="text" class="form-control" id="OverTimePayRateNight" name="OverTimeRateNightShift" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="WeekendRate" class="form-label">Pay Rate[wknd] </label>
+                                    <input type="text" class="form-control" id="WeekendPayRate" name="WeekendRate" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="WeekendRateOT" class="form-label">Pay Rate OT[wknd]</label>
+                                    <input type="text" class="form-control" id="WeekendRateOT" name="OverTimeRateWeekendShift" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="EffectiveDateFrom" class="form-label">Effective Date From</label>
+                                    <input type="date" class="form-control" id="EffectiveDateFrom" name="EffectiveDateFrom" />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="EffectiveDateTo" class="form-label">Effective Date To</label>
+                                    <input type="date" class="form-control" id="EffectiveDateTo" name="EffectiveDateTo" />
+                                </div>
+                            </div> 
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-outline-primary" form="editPayRateForm" type="submit" data-id="Data-AndyDriverPayRateId" form="editPayRateForm">
+                            <i class="bi bi-plus-square"></i> Save
+                        </button>
+                        @* <button class="btn btn-success"  data-id="Data-AndyDriverPayRateId" form="editPayRateForm" data-bs-toggle="modal" data-bs-target="#editPayRateForm" type="submit">Save Changes</button> *@
+                    </div>
+        </div>
+    </div>
+
+    <!--Model End ..-->
+</div>
+
+
+
+
+

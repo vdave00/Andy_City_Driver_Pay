@@ -1,0 +1,125 @@
+﻿@model IEnumerable<AndyDriverPayRateDTO>
+
+<div class="card shadow border-0 mt-4">
+	<div class="card-header bg-secondary bg-gradient ml-0 py-3">
+		<div class="row">
+			<div class="col-12 text-center">
+				<h1 class="text-white">Division List</h1>
+			</div>
+		</div>
+	</div>
+	<div class="card-body p-4">
+		<div class="row pb-3">
+			<div class="col-6">
+			</div>
+			<div class="col-6 text-end">
+				<a class="btn btn-outline-primary" asp-action="DivisionCreate"><i class="bi bi-plus-square"></i> Create New PayRate Rule</a>
+
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						Driver FName+LName
+					</th>
+					<th>
+						Division/Company Name
+					</th>
+					<th>
+						Regular Pay Rate[Day Shift]
+					</th>
+					<th>
+						Over-Time Pay Rate[Day Shift]
+					</th>
+					<th>
+						Regular Pay Rate[Evening Shift]
+					</th>
+					<th>
+						Over-Time Rate[Evening Shift]
+					</th>
+					<th>
+						Regular Pay Rate[Night Shift]
+					</th>
+					<th>
+						Over-Time Rate[Night Shift]
+					</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (Model != null)
+        {
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							@item.DriverId
+						</td>
+						<td>
+							@item.FleetCompanyId
+						</td>
+						<td>
+							@item.RegularRateDayShift
+						</td>
+						<td>
+							29 $
+						</td>
+						<td>
+							25 $
+						</td>
+						<td>
+							29 $
+						</td>
+						<td>
+							25 $
+						</td>
+						<td>
+							29 $
+						</td>
+						<td>
+							<a class="btn btn-danger" href="./DivisionCreate">
+								<i class="bi bi-pencil"></i>
+							</a>
+						</td>
+					</tr>
+				}
+			}
+				<tr>
+					<td>
+						Alais
+					</td>
+					<td>
+						Flatbed 
+					</td>
+					<td>
+						28 $
+					</td>
+					<td>
+						30 $
+					</td>
+					<td>
+						25 $
+					</td>
+					<td>
+						29 $
+					</td>
+					<td>
+						25 $
+					</td>
+					<td>
+						29 $
+					</td>
+					<td>
+						<a class="btn btn-danger" href="./DivisionCreate">
+							<i class="bi bi-pencil"></i>
+						</a>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+
+	</div>
+
+</div>

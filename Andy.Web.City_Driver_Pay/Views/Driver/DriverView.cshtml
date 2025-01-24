@@ -1,0 +1,349 @@
+﻿@model IEnumerable<WeekActivitiesDTO>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const tabs = document.querySelectorAll('#dateTabs button'); // Select all tab buttons
+        const defaultTabId = tabs[0]?.getAttribute('data-tab-id'); // Default to the first tab
+        const savedTabId = localStorage.getItem('selectedTabId') || defaultTabId; // Retrieve saved tab ID or default
+
+        // Activate the saved tab or default tab
+        tabs.forEach(tab => {
+            const tabId = tab.getAttribute('data-tab-id');
+            const content = document.getElementById(tabId);
+
+            if (tabId === savedTabId) {
+                tab.classList.add('active');
+                if (content) content.classList.add('show', 'active');
+            } else {
+                tab.classList.remove('active');
+                if (content) content.classList.remove('show', 'active');
+            }
+        });
+
+        // Save selected tab ID to local storage on click
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (event) => {
+                const tabId = event.target.getAttribute('data-tab-id');
+                localStorage.setItem('selectedTabId', tabId);
+            });
+        });
+    });
+</script>
+
+<!-- JS for the Populate Data on the modal ..-->
+<script>
+    //new code
+    document.addEventListener("DOMContentLoaded", () => {
+        const addHoursModal = document.getElementById('addHoursModal');
+
+        addHoursModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const orders = JSON.parse(button.getAttribute('data-orders')); // Parse JSON data
+            const tableBody = document.getElementById('modalOrderTableBody');
+            const weekStartDate = button.getAttribute('data-weekstart'); // Get the WeekStartDate
+            const weekEndDate = button.getAttribute('data-weekend'); // Get the WeekEndDate
+            // Clear previous rows
+            tableBody.innerHTML = '';
+
+            // Set the hidden inputs for week start and end dates
+            document.getElementById('weekStartDate').value = weekStartDate;
+            document.getElementById('weekEndDate').value = weekEndDate;
+            // Populate modal with order details
+            orders.forEach(order => {
+                const row = `
+                            <tr>
+                                <td class="pay-to">${order.DriverId}</td>
+                                <td class="order-number">${order.Ordnumber}</td>
+                                <td class='leg-number'>${order.Legnumber} </td>
+                                <td class ="pay-period" style="width: 12%;">${order.PayPeriod}</td>
+                                <td class="cal-hours">${order.TotalHoursForOrder}</td>
+                                <td>
+                                       <input type="number" class="form-control paid-hours" name="PaidHours" value="${order.TotalHoursForOrder}" step="0.01" />
+                                </td>
+                                <td>
+                                    <textarea class="form-control notes" name="Notes"></textarea>
+                                </td>
+                                <td>
+                                        <input type="number" class="form-control pay-rate" name="PayRate" value="${order.PayRate}"  />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control total-pay" name="TotalPay" value="${(order.TotalHoursForOrder * order.PayRate).toFixed(2)}" readonly />
+                                </td>
+                                    <input type="hidden"" class="form-control OT-Notes" name="OTNotes" value="${order.OTNotes}">
+                            </tr>
+                        `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Add event listeners for real-time Total Pay calculation
+            tableBody.querySelectorAll('tr').forEach(row => {
+                const paidHoursInput = row.querySelector('.paid-hours');
+                const payRateInput = row.querySelector('.pay-rate');
+                const totalPayInput = row.querySelector('.total-pay');
+
+                function calculateTotalPay() {
+                    const paidHours = parseFloat(paidHoursInput.value) || 0;
+                    const payRate = parseFloat(payRateInput.value) || 0;
+                    totalPayInput.value = (paidHours * payRate).toFixed(2); // Calculate and update Total Pay
+                }
+
+                paidHoursInput.addEventListener('input', calculateTotalPay);
+                payRateInput.addEventListener('input', calculateTotalPay);
+            });
+        });
+    });
+</script>
+
+<!--Script For Drag the Modal on the screen -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.querySelector('.modal');
+        const header = document.getElementById('draggableModalHeader');
+
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        header.style.cursor = 'move'; // Visual cue for draggable area
+
+        header.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - modal.offsetLeft;
+            offsetY = e.clientY - modal.offsetTop;
+            document.body.style.userSelect = 'none'; // Prevent text selection
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                modal.style.left = `${e.clientX - offsetX}px`;
+                modal.style.top = `${e.clientY - offsetY}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.body.style.userSelect = ''; // Re-enable text selection
+        });
+    });
+</script>
+
+<!-- Script For Save Record in to PayDetials and Ord, Leg ..-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('addHoursForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            //const driverId = document.getElementById('driverId')?.value.trim();
+            const weekStartDate = document.getElementById('weekStartDate')?.value.trim();
+            const weekEndDate = document.getElementById('weekEndDate')?.value.trim();
+            //const tabID = documents.getElementById('tabID')?.value.trim();
+            //const payperiods = "";
+            console.log(weekStartDate + "--" + weekEndDate + "--");
+
+            const rows = document.querySelectorAll('#modalOrderTableBody tr');
+            const PayEntryDTO = Array.from(rows).map(row => ({
+                Ord_Number: parseInt(row.querySelector('.order-number')?.textContent.trim()) || null,
+                Lgh_Number: parseInt(row.querySelector('.leg-number')?.textContent.trim()) || null,
+                Mov_number: parseInt(row.querySelector('.mov-number')?.textContent.trim()) || null,
+                PayRate: parseFloat(row.querySelector('.pay-rate')?.value) || 0,
+                PaydAmount: parseFloat(row.querySelector('.total-pay')?.value) || 0,
+                PayPeriod: (row.querySelector('.pay-period')?.textContent.trim()) || null,
+                Driverid: (row.querySelector('.pay-to')?.textContent.trim()) || null,
+                CalculateHours: (row.querySelector('.cal-hours')?.textContent.trim()) || null,
+                PaidHours:(row.querySelector('.paid-hours')?.value)||0,
+                OTNotes:(row.querySelector('.OT-Notes')?.value)||null,
+            }));
+
+            if (!PayEntryDTO.length) {
+                alert('The table must have at least one entry.');
+                return;
+            }
+
+            const PayDetailsList = {
+                PEntrylist: PayEntryDTO,
+                WeekEndDate: weekEndDate,
+                WeekStartDate: weekStartDate,
+
+            };
+
+            console.log('Payload being sent:', JSON.stringify(PayDetailsList));
+
+            try {
+                const response = await fetch('/Driver/AddPayDetails', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(PayDetailsList),
+                });
+
+
+                if (response.redirected) {
+                    window.location.href = response.url; // Redirect on successful response
+                }
+                // if (response.ok) {
+                //     const updatedData = await response.json(); // Assuming the server sends updated data back
+                //     alert('Pay details saved successfully!');
+                //     updateWeekActivities(updatedData); // Function to refresh the UI with updated data
+                //     document.querySelector('#addHoursModal').modal('hide'); // Close the modal
+                // } else {
+                //     const errorMessage = await response.text();
+                //     alert(`Error: ${errorMessage}`);
+                // }
+            } catch (error) {
+                // console.error('Error submitting pay details:', error);
+                //alert('An error occurred while saving pay details.');
+            }
+        });
+    });
+</script>
+<!--Here is the Function for Updating UI after Update Ratess.-->
+<!-- start Of Modal -->
+
+<div class="container-fluid">
+   
+    @foreach (var week in Model)
+    {
+        <div class="row">
+            <div class="col-12">
+                <h3>Week: @week.WeekStartDate.ToString("MMM dd") - @week.WeekEndDate.ToString("MMM dd")</h3>
+                <h4>Total Week Hours: @week.WeekHours</h4>
+                <ul class="nav nav-tabs" id="dateTabs" role="tablist">
+                    @foreach (var day in week.DayActivities.Select((day, index) => new { day, index }))
+                    {
+                        string tabId = $"tab{day.index + 1}"; // Generate dynamic tab IDs
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link"
+                                    id="@tabId-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#@tabId"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="@tabId"
+                                    aria-selected="false"
+                                    data-tab-id="@tabId">
+                                @day.day.workDay.ToString("dddd, MMM dd")
+                            </button>
+                        </li>
+                    }
+                </ul>
+                <div class="tab-content" id="dateTabsContent">
+                    @foreach (var day in week.DayActivities.Select((day, index) => new { day, index }))
+                    {
+                        string tabId = $"tab{day.index + 1}"; // Match the dynamic tab ID
+                        <div class="tab-pane fade"
+                             id="@tabId"
+                             role="tabpanel"
+                             aria-labelledby="@tabId-tab">
+                            <input type="hidden" class="tab-id" id="infoid" value="@tabId" />
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5>Details for @day.day.workDay.ToString("dddd, MMM dd yyyy")</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Total Hours Worked: @day.day.Totalhrs</h6>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Move No</th>
+                                                <th>Tmw Order No</th>
+                                                <th>ISSAC Order No</th>
+                                                <th>Leg Number</th>
+                                                <th>Tractor</th>
+                                                <th>Trailer</th>
+                                                <th>Division</th>
+                                                <th>Calculated Hours</th>
+                                                <th>Paid Hour</th>
+                                                <th>Notes</th>
+                                                <th>OT-Notes</th>
+                                                <th>Pay Rate</th>
+                                                <th>Total Pay</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var order in day.day.OrdNumber)
+                                            {
+                                                <tr>
+                                                    <td>@order.MovNumber</td>
+                                                    <td>@order.TMW_OrderNumber</td>
+                                                    <td>@order.Ordnumber</td>
+                                                    <td>@order.Legnumber</td>
+                                                    <td>@order.TruckNumber</td>
+                                                    <td>@order.TrailerNumber</td>
+                                                    <td>@order.Division</td>
+                                                    <td>@order.TotalHoursForOrder</td>
+                                                    <td>@order.PaidHours</td>
+                                                    <td>@order.Notes</td>
+                                                    <td>@order.OTNotes</td>
+                                                    <td>@order.PayRate</td>
+                                                    <td>@order.PydAmount</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div style="display: flex; justify-content: right;">
+                                        <button class="btn btn-success"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addHoursModal"
+                                                data-bs-target="#addHoursModal"
+                                                data-orders='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(day.day.OrdNumber))'
+                                                data-weekstart="@week.WeekStartDate"
+                                                data-weekend="@week.WeekEndDate"
+                                                >
+                                            Add Hours
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+   
+</div>
+
+<!--Modal For Adding Hours ..-->
+<div class="modal fade" id="addHoursModal" tabindex="-1" aria-labelledby="addHoursModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" id="draggableModalHeader">
+                <h5 class="modal-title" id="addHoursModalLabel">Add Hours for Orders</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="weekStartDate" name="weekStartDate" />
+                <input type="hidden" id="weekEndDate" name="weekEndDate" />
+                <input type="hidden" id="OTNotes" name="OTNotes"/>
+                <form id="addHoursForm" method="post">
+                    <table class="table table-bordered">
+                        <thead>
+
+                            <tr>
+                                <th>PayTo</th>
+                                <th>Order ID</th>
+                                <th>Leg Number</th>
+                                <th>Pay Period</th>
+                                <th>Calculated Hours</th>
+                                <th>Paid Hours</th>
+                                <th>Notes</th>
+                                <th>Pay Rate</th>
+                                <th>Total Pay</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalOrderTableBody">
+                            <!-- Rows will be dynamically added here -->
+                        </tbody>
+                    </table>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="savePayDetails">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End Adding Hours Modal-->

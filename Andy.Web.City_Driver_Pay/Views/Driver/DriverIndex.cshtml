@@ -1,0 +1,126 @@
+﻿@model IEnumerable<DriverDTO>
+<div class="card shadow border-0 mt-4">
+	<div class="card-header bg-secondary bg-gradient ml-0 py-3">
+		<div class="row">
+			<div class="col-12 text-center">
+				<h1 class="text-white">Driver List  - Pay Period :  @ViewBag.StartDate - @ViewBag.EndDate</h1>
+			</div>
+		</div>
+	</div>
+	<div class="card-body p-4">
+		<div class="row pb-3">
+			<div class="col-6">
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						Driver ID
+					</th>
+					<th>
+						Driver First Name
+					</th>
+					<th>
+					   Driver Last Name
+					</th>
+					<th>
+						Driver Division
+					</th>
+					<th>
+						Driver Total Weekly Hours 
+					</th>
+					
+					<th>
+						Details
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach(var item in Model)
+				{
+				<tr>
+					<td>
+						@item.Driverid
+					</td>
+					<td>
+						@item.DriverFname
+					</td>
+					<td>
+						@item.DriverLname
+					</td>
+					<td>
+							@item.DriverFleet
+					</td>
+						<td>
+							@{
+								decimal totalHours =Convert.ToDecimal(item.TotalHours); // Assuming item.TotalHours is a decimal
+								int minutes = (int)((totalHours - Math.Floor(totalHours)) * 60); // Extract minutes part
+								int roundedMinutes = 0;
+
+								// Round minutes based on your custom rules
+								if (minutes >= 0 && minutes <= 7)
+								{
+									roundedMinutes = 0;
+								}
+								else if (minutes >= 8 && minutes <= 22)
+								{
+									roundedMinutes = 15;
+								}
+								else if (minutes >= 23 && minutes <= 37)
+								{
+									roundedMinutes = 30;
+								}
+								else if (minutes >= 38 && minutes <= 52)
+								{
+									roundedMinutes = 45;
+								}
+								else if (minutes >= 53 && minutes <= 60)
+								{
+									roundedMinutes = 60;
+								}
+
+								// Add rounded minutes to total hours
+								int totalMinutes = (int)(Math.Floor(totalHours) * 60) + roundedMinutes;
+
+								// Convert total minutes into hours and remaining minutes
+								int finalHours = totalMinutes / 60;
+								int finalMinutes = totalMinutes % 60;
+
+								// If the minutes are greater than 60, adjust accordingly
+								if (finalMinutes >= 60)
+								{
+									finalHours += 1;
+									finalMinutes -= 60;
+								}
+
+								// Display hours and minutes (rounded)
+								string formattedTime = $"{finalHours} hour{(finalHours != 1 ? "s" : "")} and {finalMinutes} minute{(finalMinutes != 1 ? "s" : "")}";
+
+								// If you need to round total hours (optional)
+								decimal roundedTotalHours = Math.Round(finalHours + finalMinutes / 60.0m, 2);
+
+								
+							}
+							@formattedTime
+@* 
+						@Math.Round(Convert.ToDecimal(item.TotalHours), 2) *@
+					</td>
+				@* 	<td>
+						@item.OrderNumber
+					</td> *@
+					<td>
+					
+					
+						<a class="btn btn-danger" asp-route-DriverID="@item.Driverid" asp-action="DriverView" >
+								<i class="bi bi-file-earmark-fill"></i>
+						</a>
+					</td>
+				</tr>
+				}
+			</tbody>
+		</table>
+
+	</div>
+
+</div>

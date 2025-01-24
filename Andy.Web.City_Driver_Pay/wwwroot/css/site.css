@@ -1,0 +1,62 @@
+/*html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}*/
+
+/*html {
+  position: relative;
+  min-height: 100%;
+  
+}
+
+body {
+    margin-bottom: 60px;
+  
+ 
+*//*}
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;*/ /* Removes any default margin */
+    /*padding: 0;*/ /* Removes any default padding */
+/*}*/
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+*, *::before, *::after {
+  /* box-sizing: b;*/
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Optional: Fix footer margin only if required */
+body {
+   /* margin-bottom: 0;*/
+}
+
+/* Ensure containers are full-width if using Bootstrap */
+/*.container-fluid {
+    width: 100%;
+    padding: 0;
+}*/
+
+
+.container-fluid {
+    width: 100%;
+    max-width: 100%;
+}

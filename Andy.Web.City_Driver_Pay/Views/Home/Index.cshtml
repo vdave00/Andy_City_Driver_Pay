@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model IEnumerable<AndyPayRateRuleDTO>
+<div class="Custom-Card">
+    <div class="card shadow border-0 w-100" style="max-width: 100%; margin: 0 auto;">
+        <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="text-white">Driver Pay Rates Rules</h1>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="padding:5px; margin:5px;">
+           @*  <form id="driverPayRatesForm" asp-action="UpdatePayRate" method="post"> *@
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto; overflow-x: auto;">
+                    <table class="table table-bordered" style="text-align:center; margin: 0 auto; width: 50%;">
+                        <thead style="position: sticky; top: 0; background: #f8f9fa; z-index: 2;">
+                            <tr>
+                                <th>Pay Type</th>
+                                <th>Formula</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                @foreach (var pay in Model)
+                                {
+                                    <tr>
+                                        <form asp-action="UpdatePayRate" method="post">
+                                        <input type="hidden" name="PayRateName" value="@pay.PayRateName" />
+                                        <td>@pay.PayRateName</td>
+                                        <td>
+                                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span style="flex: 1; text-align: center;">@pay.PayRateForumula</span>
+                                            <input type="number" name="formula" value="@pay.Formula" min="0" step="any" style="flex: 1; text-align: center;">
+                                            </div>
+                                        </td>
+                                        <td><button type="submit" class="btn btn-success">Update</button></td>
+                                        </form>
+                                        @*     <td >@pay.PayRateForumula <input type="number" value=@pay.Formula  min="0" step="any"></td> *@
+                                    </tr>
+                                } }
+                            @*   <tr>
+                            <td>Weekend</td>
+                            <td>Regular Rate + <input type="number" value="5" min="0" step="any"></td>
+                            </tr>
+                            <tr>
+                            <td>Weekend Over-Time</td>
+                            <td>Weekend Rate + <input type="number" value="5" min="0" step="any"></td>
+                            </tr> *@
+                        </tbody>
+                    </table>
+                </div>
+              @*   <div style="margin-top: 10px; text-align: center;">
+                    <button type="submit" class="btn btn-success">Update</button>
+                </div> *@
+           @*  </form> *@
+        </div>
+    </div>
+</div>
+

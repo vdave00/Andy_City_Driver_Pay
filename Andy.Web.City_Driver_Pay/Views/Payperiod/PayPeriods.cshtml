@@ -1,0 +1,47 @@
+﻿@model List<PayPeriodDTO>
+
+@{
+    DateTime today = DateTime.Today;
+}
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient text-center py-3">
+        <h1 class="text-white">Select Pay Period</h1>
+    </div>
+    <div class="card-body p-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Week Start Date</th>
+                    <th>Week End Date</th>
+                    <th>Pay Period</th>
+                    <th>No. Of Driver Worked</th>
+                    @* <th>Total Hours</th> *@
+                    <th>No Of Orders</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var period in Model)
+                {
+                    <tr>
+                        <td>@period.PayperiodStartDate.ToString("yyyy-MM-dd")</td>
+                        <td>@period.PayperiodEndDate.ToString("yyyy-MM-dd")</td>
+                        <td>@period.payDayDate.ToString("yyyy-MM-dd")</td>
+                        <td>@period.CountOFDriver</td>
+                      @*   <td>@Math.Round(Convert.ToDecimal(period.TotalHoursWorked), 2)- HRS</td> *@
+                        <td>@period.NoOfOrders </td>
+                        <td>
+                            <form asp-controller="Driver" asp-action="DriversBook" method="get">
+                                <input type="hidden" name="startDate" value="@period.PayperiodStartDate" />
+                                <input type="hidden" name="endDate" value="@period.PayperiodEndDate" />
+                                <input type="hidden" name="pyhPayPeriod" value="@period.payDayDate" />
+                                <button type="submit" class="btn btn-primary" >View Drivers</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -1,0 +1,237 @@
+﻿<form>
+    <br />
+
+    <div class="container-sm border p-3">
+        <!-- Use container-sm for smaller width -->
+        <h1 class="text-white text-center">Update Driver Pay Rate</h1>
+
+        <hr />
+        @if (Model != null)
+        {
+            <div class="row">
+                <!-- Division Name -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Division Name</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.DriverId" />
+                </div>
+
+                <!-- Regular Pay Rate [Day Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Regular Pay Rate [Day Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.RegularRateDayShift" />
+                </div>
+
+                <!-- Regular Pay Rate [Evening Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Regular Pay Rate [Evening Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.RegularRateEveShift" />
+                </div>
+
+                <!-- Regular Pay Rate [Night Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Regular Pay Rate [Night Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.RegularRateNightShift" />
+                </div>
+
+                <!-- Over Time Pay Rate [Day Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Over Time Pay Rate [Day Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.OverTimeRateDayShift" />
+                </div>
+
+                <!-- Over Time Rate [Evening Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Over Time Rate [Evening Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.OverTimeRateEveShift" />
+                </div>
+
+                <!-- Over Time Pay Rate [Night Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Over Time Pay Rate [Night Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.OverTimeRateNightShift" />
+                </div>
+
+                <!-- Rate Per Mileage -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Rate Per Mileage</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.RatePerMileage" />
+                </div>
+
+                <!-- Buttons: Back to List and Create -->
+                <div class="col-12 d-flex justify-content-center">
+                    <a class="btn btn-primary mr-2" onclick="window.history.back();">Back to List</a>
+                    <input type="submit" value="Create" class="btn btn-success" />
+                </div>
+            </div>
+        }
+    </div>
+
+
+
+    @* <div class="container border p-3">
+        <h1 class="text-white text-center">Update Driver Pay Rate</h1>
+
+        <hr />
+         @if (Model != null)
+        {
+            <div class="row text-center">
+                <!-- Division Name -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Division Name</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.DriverId" />
+                </div>
+
+                <!-- Regular Pay Rate [Day Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Regular Pay Rate [Day Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.RegularRateDayShift" />
+                </div>
+
+                <!-- Regular Pay Rate [Evening Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Regular Pay Rate [Evening Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.RegularRateEveShift" />
+                </div>
+
+                <!-- Regular Pay Rate [Night Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Regular Pay Rate [Night Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.RegularRateNightShift" />
+                </div>
+
+                <!-- Over Time Pay Rate [Day Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Over Time Pay Rate [Day Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.OverTimeRateDayShift" />
+                </div>
+
+                <!-- Over Time Rate [Evening Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Over Time Rate [Evening Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.OverTimeRateEveShift" />
+                </div>
+
+                <!-- Over Time Pay Rate [Night Shift] -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Over Time Pay Rate [Night Shift]</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.OverTimeRateNightShift" />
+                </div>
+
+                <!-- Rate Per Mileage -->
+                <div class="col-sm-6">
+                    <label class="control-label pt-2" style="font-size:16px;">Rate Per Mileage</label>
+                </div>
+                <div class="col-sm-6 pb-3">
+                    <input class="form-control" value="@Model.RatePerMileage" />
+                </div>
+
+                <!-- Buttons: Back to List and Create -->
+                <div class="col-sm-6 offset-sm-3 text-center">
+                    <a class="btn btn-primary form-control" onclick="window.history.back();">Back to List</a>
+                </div>
+                <div class="col-sm-6">
+                    <input type="submit" value="Create" class="btn btn-success form-control" />
+                </div>
+            </div>
+
+          @*   <div class="row text-center">
+                <div class="col-8">
+                <label class="control-label pt-2" style="font-size:20px;">Division Name</label>
+            </div>
+                <div class="col-4  pb-3">
+                <input class="form-control"  value="@Model.DriverId"/>
+            </div>
+            <div class="col-8">
+                <label class="control-label pt-2" style="font-size:20px;">Regular Pay Rate [Day Shift]</label>
+            </div>
+                <div class="col-4 pb-3">
+                    <input class="form-control" value="@Model.RegularRateDayShift" />
+            </div>
+                <div class="col-8">
+                    <label class="control-label pt-2" style="font-size:20px;">Regular Pay Rate [Evening Shift]</label>
+                </div>
+                <div class="col-4  pb-3">
+                    <input class="form-control" value="@Model.RegularRateEveShift" />
+                </div>
+            <div class="col-8">
+                    <label class="control-label pt-2" style="font-size:20px;">Regular Pay Rate [Night Shift]</label>
+            </div>
+
+                <div class="col-4  pb-3">
+                    <input class="form-control" value="@Model.RegularRateNightShift" />
+            </div>
+                <div class="col-8">
+                    <label class="control-label pt-2" style="font-size:20px;">Over Time Pay Rate [Day Shift]</label>
+                </div>
+                <div class="col-4  pb-3">
+
+                    <input class="form-control" value="@Model.OverTimeRateDayShift" />
+                </div>
+                <div class="col-8">
+                    <label class="control-label pt-2" style="font-size:20px;">Over Time Rate [Evening Shift]</label>
+                </div>
+                <div class="col-4  pb-3">
+
+                    <input class="form-control" value="@Model.OverTimeRateEveShift" />
+                </div>
+                <div class="col-8">
+                    <label class="control-label pt-2" style="font-size:20px;">Over Time Pay Rate [Night Shift]</label>
+                </div>
+
+                <div class="col-4  pb-3">
+                    <input class="form-control" value="@Model.OverTimeRateNightShift" />
+                </div>
+                <div class="col-8">
+                    <label class="control-label pt-2" style="font-size:20px;"> Rate Per Milage</label>
+                </div>
+
+                <div class="col-4  pb-3">
+                    <input class="form-control" value="@Model.RatePerMileage" />
+                </div>
+            <div class="col-5 offset-2">
+
+                    <a class="btn-primary btn form-control " onclick="window.history.back();">Back to List</a>
+            </div>
+            <div class="col-5">
+                <input type="submit" value="Create" class="btn btn-success form-control" />
+
+            </div>
+
+        </div> *@
+      @*   } *@
+  @*       <div>
+        </div>
+    </div>  *@
+</form>
+
+

@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{7928DC99-FF56-4AB4-93E8-CDDF55920A52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{87A5815D-5E41-4D9D-95E4-D2EE127D2BD6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{C361EBD0-F1CB-40B1-97BE-E7388C3BB44E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B2480E2F-BB6A-40BA-8CF4-59347EDA5F73}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andy.Services.DriverApi", "Andy.Services.DriverApi\Andy.Services.DriverApi.csproj", "{12B75137-9BB7-4EE7-958F-CBEF6FE504B3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andy.Web.City_Driver_Pay", "Andy.Web.City_Driver_Pay\Andy.Web.City_Driver_Pay.csproj", "{A4C2FC39-706E-4BA5-B5C4-D49456663368}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andy_city_DriverFromTMWBIDW_API", "Andy_city_DriverFromTMWBIDW_API\Andy_city_DriverFromTMWBIDW_API.csproj", "{3E60449D-292C-47DF-BBAD-3578987EE13C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andy_Driver_PayRate_Rule_API", "Andy_Driver_PayRate_Rule_API\Andy_Driver_PayRate_Rule_API.csproj", "{2391A9F7-365A-4B69-A4D3-61433A5488F2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12B75137-9BB7-4EE7-958F-CBEF6FE504B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12B75137-9BB7-4EE7-958F-CBEF6FE504B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12B75137-9BB7-4EE7-958F-CBEF6FE504B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12B75137-9BB7-4EE7-958F-CBEF6FE504B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4C2FC39-706E-4BA5-B5C4-D49456663368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4C2FC39-706E-4BA5-B5C4-D49456663368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4C2FC39-706E-4BA5-B5C4-D49456663368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4C2FC39-706E-4BA5-B5C4-D49456663368}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E60449D-292C-47DF-BBAD-3578987EE13C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E60449D-292C-47DF-BBAD-3578987EE13C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E60449D-292C-47DF-BBAD-3578987EE13C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E60449D-292C-47DF-BBAD-3578987EE13C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2391A9F7-365A-4B69-A4D3-61433A5488F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2391A9F7-365A-4B69-A4D3-61433A5488F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2391A9F7-365A-4B69-A4D3-61433A5488F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2391A9F7-365A-4B69-A4D3-61433A5488F2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{12B75137-9BB7-4EE7-958F-CBEF6FE504B3} = {B2480E2F-BB6A-40BA-8CF4-59347EDA5F73}
+		{A4C2FC39-706E-4BA5-B5C4-D49456663368} = {7928DC99-FF56-4AB4-93E8-CDDF55920A52}
+		{3E60449D-292C-47DF-BBAD-3578987EE13C} = {B2480E2F-BB6A-40BA-8CF4-59347EDA5F73}
+		{2391A9F7-365A-4B69-A4D3-61433A5488F2} = {B2480E2F-BB6A-40BA-8CF4-59347EDA5F73}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F92F33B-7FC9-4395-9E1B-D564AF23E7A5}
+	EndGlobalSection
+EndGlobal
